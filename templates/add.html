@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新增交易資料</title>
+</head>
+<body>
+    <form method="POST">
+        <div class="form-group">
+            <label>交易類型</label>
+            <select name="type" class="form-control">
+                <option value="buy">買入</option>
+                <option value="sell">賣出</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>重量</label>
+            <input type="number" step="0.01" name="weight" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>單價(每克新台幣)</label>
+            <input type="number" step="0.01" name="price" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>註記</label>
+            <input type="text" name="note" class="form-control">
+        </div>
+            <div class="form-group">
+                <label>交易時間</label>
+                <input type="datetime-local" name="timestamp" class="form-control">
+            </div>
+        <button type="submit">提交</button>
+    </form>
+</body>
+</html>
