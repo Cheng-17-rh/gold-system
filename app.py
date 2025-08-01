@@ -61,10 +61,6 @@ def add():
 def delete(id):
     collection.delete_one({"_id":ObjectId(id)})
     return redirect("/")
-
-#篩選日期
-@app.route("/choosedate")
-def choosedate():
     
     
 if __name__=="__main__":
