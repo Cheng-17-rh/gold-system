@@ -1,6 +1,5 @@
 from bson.objectid import ObjectId
 import pymongo
-from dateutil import parser
 client =pymongo.MongoClient("mongodb+srv://ryan:ryan1234@mycluster.rf6tx9u.mongodb.net/?retryWrites=true&w=majority&appName=MyCluster")
 db=client.goldbuysell
 collection=db.gold
@@ -14,9 +13,9 @@ app.secret_key="1234"
 from datetime import datetime
 
 #首頁
-@app.route("/")
+@app.route("/",methods=["GET","POST"])
 def home():
-    #平均買入價格
+    #平均買入價格函式
     def clt_avg_amount(transactions):
         buy_transactions=[t for t in transactions if t["type"]=="buy"]
         if not buy_transactions:
@@ -33,7 +32,7 @@ def home():
         end_date=datetime.strptime(end_str,"%Y-%m-%dT%H:%M")
         query["timestamp"]={"$gte": start_date, "$lte": end_date}
     records=list(collection.find(query).sort("timestamp",-1))
-
+    #統計資訊
     stats={
         "total_buy":sum(t["amount"] for t in records if t["type"]=="buy"),
         "total_amount":sum(t["amount"] for t in records if t["type"]=="buy"),
@@ -69,12 +68,7 @@ def delete(id):
     collection.delete_one({"_id":ObjectId(id)})
     return redirect("/")
 
-#篩選日期
-@app.route("/screeningdate",methods=["GET","POST"])
-def screendate():
 
-    
-    
 if __name__=="__main__":
     app.run(debug=True)
 
