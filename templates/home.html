@@ -10,6 +10,14 @@
     <div class="text-end mb-3">
         <a href="{{url_for('add')}}" class="btn btn-primary">+ 新增交易</a>
     </div>
+    <form method="POST" action="/">
+        <label>開始日期</label>
+        <input type="datetime-local" name="start">
+        <label>結束日期</label>
+        <input type="datetime-local" name="end">
+        <button type="submit">查詢</button>
+    </form>
+    <hr/>
     <table class="table table-triped">
         <thead>
             <tr>
