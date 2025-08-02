@@ -1,5 +1,6 @@
 from bson.objectid import ObjectId
 import pymongo
+from dateutil import parser
 client =pymongo.MongoClient("mongodb+srv://ryan:ryan1234@mycluster.rf6tx9u.mongodb.net/?retryWrites=true&w=majority&appName=MyCluster")
 db=client.goldbuysell
 collection=db.gold
@@ -23,9 +24,15 @@ def home():
         total_amount=sum([t['amount'] for t in transactions])
         total_weight=sum([t['weight'] for t in transactions])
         return total_amount/total_weight if total_weight!=0 else 0
-       
-    
-    records=list(collection.find().sort("timestamp",-1))
+    #日期篩選
+    start_str=request.form.get("start")
+    end_str=request.form.get("end")
+    query={}
+    if start_str and end_str:
+        start_date=datetime.strptime(start_str,"%Y-%m-%dT%H:%M")
+        end_date=datetime.strptime(end_str,"%Y-%m-%dT%H:%M")
+        query["timestamp"]={"$gte": start_date, "$lte": end_date}
+    records=list(collection.find(query).sort("timestamp",-1))
 
     stats={
         "total_buy":sum(t["amount"] for t in records if t["type"]=="buy"),
@@ -61,6 +68,11 @@ def add():
 def delete(id):
     collection.delete_one({"_id":ObjectId(id)})
     return redirect("/")
+
+#篩選日期
+@app.route("/screeningdate",methods=["GET","POST"])
+def screendate():
+
     
     
 if __name__=="__main__":
