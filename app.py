@@ -1,8 +1,8 @@
 from bson.objectid import ObjectId
 import pymongo
 client =pymongo.MongoClient("mongodb+srv://ryan:ryan1234@mycluster.rf6tx9u.mongodb.net/?retryWrites=true&w=majority&appName=MyCluster")
-db=client.goldbuysell
-collection=db.gold
+gold_db=client.goldbuysell
+gold_collection=gold_db.gold
 print("資料庫連線成功")
 
 
@@ -11,9 +11,14 @@ app=Flask(__name__)
 app.secret_key="1234"
 
 from datetime import datetime
+#登入頁面
+@app.route("/",methods=["GET","POST"])
+def member():
+    
+
 
 #首頁
-@app.route("/",methods=["GET","POST"])
+@app.route("/homescreen",methods=["GET","POST"])
 def home():
     #平均買入價格函式
     def clt_avg_amount(transactions):
@@ -31,7 +36,7 @@ def home():
         start_date=datetime.strptime(start_str,"%Y-%m-%dT%H:%M")
         end_date=datetime.strptime(end_str,"%Y-%m-%dT%H:%M")
         query["timestamp"]={"$gte": start_date, "$lte": end_date}
-    records=list(collection.find(query).sort("timestamp",-1))
+    records=list(gold_collection.find(query).sort("timestamp",-1))
     #統計資訊
     stats={
         "total_buy":sum(t["amount"] for t in records if t["type"]=="buy"),
@@ -58,15 +63,15 @@ def add():
             "note":request.form.get("note"),
             "timestamp":timestamp                                       
         }
-        collection.insert_one(transaction)
+        gold_collection.insert_one(transaction)
         return redirect("/")
     return render_template("add.html")
 
 #刪除
 @app.route("/delete/<id>",methods=["POST"])
 def delete(id):
-    collection.delete_one({"_id":ObjectId(id)})
-    return redirect("/")
+    gold_collection.delete_one({"_id":ObjectId(id)})
+    return redirect("/homescreen")
 
 
 if __name__=="__main__":
