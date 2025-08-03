@@ -17,7 +17,7 @@ from datetime import datetime
 #登入
 @app.route("/")
 def signin():
-    return render_template("index.html")
+    return render_template("signin.html")
 
 #signin->signup
 @app.route("/change")
@@ -32,7 +32,7 @@ def signup():
     password=request.form.get("password")
     result=member_collection.find_one({
         "$or":[
-            {"mickname":nickname},
+            {"nickname":nickname},
             { "email":email}           
             ]  
     })
