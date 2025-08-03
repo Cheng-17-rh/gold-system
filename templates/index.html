@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>請先登入</title>
+</head>
+<body>
+    <form action="/signin" method="POST">
+        <div class="form-group">
+            <label>電子郵件</label>
+            <input type="text" name="nickname">
+        </div>
+        <div class="form-group">
+            <input type="password" name="password">
+        </div>
+        <button type="submit">登入</button>
+    </form>
+    <a href="{{ url_for('signup')}}">註冊</a>
+</body>
+</html>

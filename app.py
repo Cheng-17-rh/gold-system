@@ -15,23 +15,23 @@ app.secret_key="1234"
 from datetime import datetime
                             
 #註冊帳號
-@app.route("/",methods=["GET","POST"])
+@app.route("/signup",methods=["GET","POST"])
 def member():
     nickname=request.form.get("nickname")
     email=request.form.get("email")
     password=request.form.get("password")
-    result=member_collection.find({
+    result=member_collection.find_one({
         "$or":[
-            {"mickname":"nickname"},
-               { "email":"email"}           
+            {"mickname":nickname},
+               { "email":email}           
             ]  
     })
     if result !=None:
         return redirect("/error?msg=信箱已被使用")
     member_collection.insert_one({
-        "nickname":"naickname",
-        "email":"email",
-        "password":"password"
+        "nickname":nickname,
+        "email":email,
+        "password":password
     })
     return render_template("signupsuccess.html")
 
