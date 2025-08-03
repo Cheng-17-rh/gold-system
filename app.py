@@ -14,10 +14,26 @@ app.secret_key="1234"
 
 from datetime import datetime
 
-#登入
+#主畫面
 @app.route("/")
-def signin():
+def main():
     return render_template("signin.html")
+
+#登入
+@app.route("/signin")
+def signin():
+    email=request.form.get("email")
+    password=request.form.get("password")
+    result=member_collection.find_one({
+       "$and":[
+           {"email":email},
+           {"password":password}
+       ]
+    })
+    if result==None:
+        return render_template("/error?msg=信箱或密碼錯誤")
+    session["nickname"]=result["nickname"]
+    return render_template("home.html")
 
 #signin->signup
 @app.route("/change")
