@@ -18,6 +18,11 @@ from datetime import datetime
 @app.route("/")
 def signin():
     return render_template("index.html")
+
+#signin->signup
+@app.route("/change")
+def change():
+    return render_template("signup.html")
                             
 #註冊帳號
 @app.route("/signup",methods=["GET","POST"])
@@ -28,7 +33,7 @@ def signup():
     result=member_collection.find_one({
         "$or":[
             {"mickname":nickname},
-               { "email":email}           
+            { "email":email}           
             ]  
     })
     if result !=None:
