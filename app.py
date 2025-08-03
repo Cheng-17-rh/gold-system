@@ -13,6 +13,11 @@ app=Flask(__name__)
 app.secret_key="1234"
 
 from datetime import datetime
+
+#登入
+@app.route("/")
+def signin():
+    return render_template("index.html")
                             
 #註冊帳號
 @app.route("/signup",methods=["GET","POST"])
