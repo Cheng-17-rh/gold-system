@@ -17,13 +17,16 @@ from datetime import datetime
 #主畫面
 @app.route("/")
 def main():
-    return render_template("signin.html")
+    return render_template("first.html")
 
 #登入
-@app.route("/signin")
+@app.route("/signin",methods=["GET","POST"])
 def signin():
     email=request.form.get("email")
     password=request.form.get("password")
+    #!!!!!!!
+    print("email:", email)
+    print("password:", password)
     result=member_collection.find_one({
        "$and":[
            {"email":email},
@@ -31,9 +34,9 @@ def signin():
        ]
     })
     if result==None:
-        return render_template("/error?msg=信箱或密碼錯誤")
+        return redirect ("/error?msg=信箱或密碼錯誤")
     session["nickname"]=result["nickname"]
-    return render_template("home.html")
+    return redirect("/homescreen")
 
 #signin->signup
 @app.route("/change")
@@ -67,10 +70,18 @@ def error():
     message=request.args.get("msg","出現未知的錯誤")
     return render_template("error.html",message=message)
 
+#登出
+@app.route("/signout")
+def signout():
+    session.pop("nickname",None)
+    return redirect("/")
+
 
 #首頁
 @app.route("/homescreen",methods=["GET","POST"])
 def home():
+    if "nickname" not in session:
+        return redirect("/")
     #平均買入價格函式
     def clt_avg_amount(transactions):
         buy_transactions=[t for t in transactions if t["type"]=="buy"]
@@ -82,7 +93,7 @@ def home():
     #日期篩選
     start_str=request.form.get("start")
     end_str=request.form.get("end")
-    query={}
+    query={"owner":session["nickname"]}
     if start_str and end_str:
         start_date=datetime.strptime(start_str,"%Y-%m-%dT%H:%M")
         end_date=datetime.strptime(end_str,"%Y-%m-%dT%H:%M")
@@ -103,7 +114,7 @@ def add():
     if request.method=="POST":
         timestamp_str=request.form.get("timestamp")
         if timestamp_str:
-            timestamp=datetime.strptime(timestamp_str, "%Y-%m-%dT%H:%M")
+            timestamp=datetime.strptime(timestamp_str, "%Y-%m-%d")
         else:
             timestamp=datetime.now()
         transaction={
@@ -112,16 +123,17 @@ def add():
             "price":float(request.form.get("price")),
             "amount":float(request.form.get("weight"))*float(request.form.get("price")),
             "note":request.form.get("note"),
-            "timestamp":timestamp                                       
+            "timestamp":timestamp,
+            "owner":session["nickname"]                                     
         }
         gold_collection.insert_one(transaction)
-        return redirect("/")
+        return redirect("/homescreen")
     return render_template("add.html")
 
 #刪除
 @app.route("/delete/<id>",methods=["POST"])
 def delete(id):
-    gold_collection.delete_one({"_id":ObjectId(id)})
+    gold_collection.delete_one({"_id":ObjectId(id),"owner":session["nickname"]})
     return redirect("/homescreen")
 
 
