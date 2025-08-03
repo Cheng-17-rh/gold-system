@@ -3,6 +3,8 @@ import pymongo
 client =pymongo.MongoClient("mongodb+srv://ryan:ryan1234@mycluster.rf6tx9u.mongodb.net/?retryWrites=true&w=majority&appName=MyCluster")
 gold_db=client.goldbuysell
 gold_collection=gold_db.gold
+member_db=client.member_system
+member_collection=member_db.users
 print("資料庫連線成功")
 
 
@@ -11,10 +13,33 @@ app=Flask(__name__)
 app.secret_key="1234"
 
 from datetime import datetime
-#登入頁面
+                            
+#註冊帳號
 @app.route("/",methods=["GET","POST"])
 def member():
-    
+    nickname=request.form.get("nickname")
+    email=request.form.get("email")
+    password=request.form.get("password")
+    result=member_collection.find({
+        "$or":[
+            {"mickname":"nickname"},
+               { "email":"email"}           
+            ]  
+    })
+    if result !=None:
+        return redirect("/error?msg=信箱已被使用")
+    member_collection.insert_one({
+        "nickname":"naickname",
+        "email":"email",
+        "password":"password"
+    })
+    return render_template("signupsuccess.html")
+
+#錯誤
+@app.route("/error")
+def error():
+    message=request.args.get("msg","出現未知的錯誤")
+    return render_template("error.html",message=message)
 
 
 #首頁
