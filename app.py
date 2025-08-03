@@ -21,7 +21,7 @@ def signin():
                             
 #註冊帳號
 @app.route("/signup",methods=["GET","POST"])
-def member():
+def signup():
     nickname=request.form.get("nickname")
     email=request.form.get("email")
     password=request.form.get("password")
