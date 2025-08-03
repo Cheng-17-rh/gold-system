@@ -12,7 +12,7 @@
     </div>
     <div class="text-end mb-3">
         <a href="/signout" class="btn btn-primary">登出</a>
-    </div>      
+    </div>
     <form method="POST" action="/homescreen">
         <label>開始日期</label>
         <input type="date" name="start">
@@ -41,7 +41,7 @@
                 <td>{{ t.price }}</td>
                 <td>{{ t.amount }}</td>
                 <td>{{ t.note }}</td>
-                <td>{{ t.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>{{ t.timestamp.strftime('%Y-%m-%d') }}</td>
                 <td>
                     <form action="{{url_for('delete',id=t._id|string) }}" method="POST" style="display:inline;">
                         <button type="submit">刪除</button>
