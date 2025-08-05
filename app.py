@@ -99,6 +99,13 @@ def home():
         end_date=datetime.strptime(end_str,"%Y-%m-%dT%H:%M")
         query["timestamp"]={"$gte": start_date, "$lte": end_date}
     records=list(gold_collection.find(query).sort("timestamp",-1))
+    #
+    for record in records:
+        if isinstance(record["timestamp"], str):
+            try:
+                record["timestamp"] = datetime.strptime(record["timestamp"], "%Y-%m-%d")
+            except ValueError:
+                record["timestamp"] = datetime.now()
     #統計資訊
     stats={
         "total_buy":sum(t["amount"] for t in records if t["type"]=="buy"),

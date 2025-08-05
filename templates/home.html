@@ -12,12 +12,12 @@
     </div>
     <div class="text-end mb-3">
         <a href="/signout" class="btn btn-primary">登出</a>
-    </div>
+    </div>      
     <form method="POST" action="/homescreen">
         <label>開始日期</label>
-        <input type="date" name="start">
+        <input type="datetime-local" name="start">
         <label>結束日期</label>
-        <input type="date" name="end">
+        <input type="datetime-local" name="end">
         <button type="submit">查詢</button>
     </form>
     <hr/>
