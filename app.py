@@ -136,6 +136,21 @@ def delete(id):
     gold_collection.delete_one({"_id":ObjectId(id),"owner":session["nickname"]})
     return redirect("/homescreen")
 
+#修改
+@app.route("/update/<id>",methods=["POST"])
+def update():
+    data=request.json
+    try:
+        gold_collection.update_one(
+            {"_id":ObjectId(id)},
+            {"$set: data "}
+        )
+        return jsonify({"success":True})
+    except Exception as e:
+        return jsonify({"success":False,"error":str(e)})
+        
+
+
 
 if __name__=="__main__":
     app.run(debug=True)

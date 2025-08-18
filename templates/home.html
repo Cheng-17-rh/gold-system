@@ -46,6 +46,7 @@
                     <form action="{{url_for('delete',id=t._id|string) }}" method="POST" style="display:inline;">
                         <button type="submit">刪除</button>
                     </form>
+                    <button onclick="enableEdit('{{t._id}}')">修改</button>
                 </td>
             </tr>
             {% endfor %}
@@ -59,6 +60,7 @@
             <P>平均買入價格:{{stats.total_avg_amount}}</P>
         </div>
     </div>
+    <script src="{{ url_for('static', filename='JS/edit.js')}}"></script>
     
 </body>
 </html>
