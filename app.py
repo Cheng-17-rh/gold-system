@@ -114,7 +114,7 @@ def add():
     if request.method=="POST":
         timestamp_str=request.form.get("timestamp")
         if timestamp_str:
-            timestamp=datetime.strptime(timestamp_str, "%Y-%m-%d")
+            timestamp=datetime.strptime(timestamp_str, "%Y-%m-%dT%H:%M")
         else:
             timestamp=datetime.now()
         transaction={
