@@ -35,7 +35,7 @@
         </thead>
         <tbody>
             {%for t in records %}
-            <tr>
+            <tr id="row-{{t._id}}">
                 <td>{{"買入" if t.type=="buy" else "賣出"}}</td>
                 <td>{{ t.weight }}</td>
                 <td>{{ t.price }}</td>

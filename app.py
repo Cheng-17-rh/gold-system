@@ -138,12 +138,12 @@ def delete(id):
 
 #修改
 @app.route("/update/<id>",methods=["POST"])
-def update():
+def update(id):
     data=request.json
     try:
         gold_collection.update_one(
             {"_id":ObjectId(id)},
-            {"$set: data "}
+            {"$set": data} 
         )
         return jsonify({"success":True})
     except Exception as e:

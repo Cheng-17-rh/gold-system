@@ -5,25 +5,25 @@ function enableEdit(id){
     //保留原本的資料
     for (let i=0 ; i<cells.length-1; i++) {
         const text=cells[i].innerText
-        cells[i].setAttribute("data-orignal",text)
+        cells[i].setAttribute("data-original",text)
         cells[i].innerHTML=`<input type=text value="${text}"/>`;
     }
     
     //改編操作欄位 修改->確認or取消
-    const actionCell=cell[cell.length-1];
+    const actionCell=cells[cells.length-1];
     actionCell.innerHTML=`
-        <button onclick="confirmEdit('$(id)')">確認</button>;
-        <button onclick="cancelEdit('$(id)')">取消</button>;
+        <button onclick="confirmEdit('${id}')">確認</button>;
+        <button onclick="cancelEdit('${id}')">取消</button>;
     `;
 }
 
 
 //確認修改
-function confirmEdit(){
-    const row=document.getElementById("row"+id);
+function confirmEdit(id){
+    const row=document.getElementById("row-"+id);
     const inputs=row.querySelectorAll("td input");
     let updateData=[];
-
+    console.log("1")
     //取出輸入的值
     inputs.forEach(input => {
         updateData.push(input.value);
@@ -58,10 +58,10 @@ function confirmEdit(){
             cells[4].innerText=payload.note;
             cells[5].innerText=payload.timestamp;
             cells[6].innerHTML=`
-                    <form action="{{url_for('delete',id=t._id|string) }}" method="POST" style="display:inline;">
+                    <form action="/detelet/${id}" method="POST" style="display:inline;">
                         <button type="submit">刪除</button>
                     </form>
-                    <button onclick="enableEdit('{{t._id}}')">修改</button>
+                    <button onclick="enableEdit('${id}')">修改</button>
                     `;         
         } else {
             alert("更新失敗");
@@ -76,8 +76,8 @@ function cancelEdit(id) {
 
     //還原元交易資料
     for (let i=0;i<cells.length-1;i++) {
-        const orignal=cells[i].getAttribute("data-orginal")
-        cells[i].innerText=orignal;
+        const original=cells[i].getAttribute("data-original")
+        cells[i].innerText=original;
     }
 
     //還原操作按鈕 正確取消->修改刪除
