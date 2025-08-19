@@ -95,8 +95,8 @@ def home():
     end_str=request.form.get("end")
     query={"owner":session["nickname"]}
     if start_str and end_str:
-        start_date=datetime.strptime(start_str,"%Y-%m-%dT%H:%M")
-        end_date=datetime.strptime(end_str,"%Y-%m-%dT%H:%M")
+        start_date=datetime.strptime(start_str,"%Y-%m-%d")
+        end_date=datetime.strptime(end_str,"%Y-%m-%d")
         query["timestamp"]={"$gte": start_date, "$lte": end_date}
     records=list(gold_collection.find(query).sort("timestamp",-1))
     #統計資訊
@@ -114,7 +114,7 @@ def add():
     if request.method=="POST":
         timestamp_str=request.form.get("timestamp")
         if timestamp_str:
-            timestamp=datetime.strptime(timestamp_str, "%Y-%m-%dT%H:%M")
+            timestamp=datetime.strptime(timestamp_str, "%Y-%m-%d")
         else:
             timestamp=datetime.now()
         transaction={
