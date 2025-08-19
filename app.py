@@ -101,7 +101,7 @@ def home():
     records=list(gold_collection.find(query).sort("timestamp",-1))
     #統計資訊
     stats={
-        "total_buy":sum(t["amount"] for t in records if t["type"]=="buy"),
+        "total_buy":sum(float(t["amount"]) for t in records if t["type"]=="buy"),
         "total_amount":sum(t["amount"] for t in records if t["type"]=="buy"),
         "total_avg_amount":clt_avg_amount(records),
         "total_weight":sum(t['weight'] for t in records if t["type"]=="buy")

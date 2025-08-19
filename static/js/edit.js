@@ -23,18 +23,19 @@ function confirmEdit(id){
     const row=document.getElementById("row-"+id);
     const inputs=row.querySelectorAll("td input");
     let updateData=[];
-    console.log("1")
+    
     //取出輸入的值
     inputs.forEach(input => {
         updateData.push(input.value);
     });
+    const amount=updateData[1]*updateData[2]
 
     //資料欄位
     const payload={
         type:updateData[0],
         weight:updateData[1],
         price:updateData[2],
-        amount:updateData[3],
+        amount:amount,
         note:updateData[4],
         timestamp:updateData[5]
     };
@@ -58,7 +59,7 @@ function confirmEdit(id){
             cells[4].innerText=payload.note;
             cells[5].innerText=payload.timestamp;
             cells[6].innerHTML=`
-                    <form action="/detelet/${id}" method="POST" style="display:inline;">
+                    <form action="/delete/${id}" method="POST" style="display:inline;">
                         <button type="submit">刪除</button>
                     </form>
                     <button onclick="enableEdit('${id}')">修改</button>
@@ -82,7 +83,7 @@ function cancelEdit(id) {
 
     //還原操作按鈕 正確取消->修改刪除
     cells[cells.length-1].innerHTML=`
-        <form action="{{url_for('delete',id=t._id|string) }}" method="POST" style="display:inline;">
+        <form action="/delete/${id}" method="POST" style="display:inline;">
             <button type="submit">刪除</button>
         </form>
         <button onclick="enableEdit('{{t._id}}')">修改</button>
