@@ -12,8 +12,8 @@ function enableEdit(id){
     //改編操作欄位 修改->確認or取消
     const actionCell=cells[cells.length-1];
     actionCell.innerHTML=`
-        <button onclick="confirmEdit('${id}')">確認</button>;
-        <button onclick="cancelEdit('${id}')">取消</button>;
+        <button onclick="confirmEdit('${id}')">確認</button>
+        <button onclick="cancelEdit('${id}')">取消</button>
     `;
 }
 
@@ -28,7 +28,9 @@ function confirmEdit(id){
     inputs.forEach(input => {
         updateData.push(input.value);
     });
-    const amount=updateData[1]*updateData[2]
+    const weight=parseFloat(updateData[1]);
+    const price=parseFloat(updateData[2]);
+    const amount=weight*price;
 
     //資料欄位
     const payload={
@@ -72,7 +74,7 @@ function confirmEdit(id){
 
 //取消修改
 function cancelEdit(id) {
-    const row=document.getElementById("row"+id);
+    const row=document.getElementById("row-"+id);
     const cells=row.querySelectorAll("td");
 
     //還原元交易資料
@@ -86,7 +88,7 @@ function cancelEdit(id) {
         <form action="/delete/${id}" method="POST" style="display:inline;">
             <button type="submit">刪除</button>
         </form>
-        <button onclick="enableEdit('{{t._id}}')">修改</button>
+        <button onclick="enableEdit('${id}')">修改</button>
         `; 
 }
 

@@ -87,8 +87,8 @@ def home():
         buy_transactions=[t for t in transactions if t["type"]=="buy"]
         if not buy_transactions:
             return 0
-        total_amount=sum([t['amount'] for t in transactions])
-        total_weight=sum([t['weight'] for t in transactions])
+        total_amount=sum([float(t['amount']) for t in transactions])
+        total_weight=sum([float(t['weight']) for t in transactions])
         return total_amount/total_weight if total_weight!=0 else 0
     #日期篩選
     start_str=request.form.get("start")
@@ -102,9 +102,9 @@ def home():
     #統計資訊
     stats={
         "total_buy":sum(float(t["amount"]) for t in records if t["type"]=="buy"),
-        "total_amount":sum(t["amount"] for t in records if t["type"]=="buy"),
+        "total_amount":sum(float(t["amount"]) for t in records if t["type"]=="buy"),
         "total_avg_amount":clt_avg_amount(records),
-        "total_weight":sum(t['weight'] for t in records if t["type"]=="buy")
+        "total_weight":sum(float(t['weight']) for t in records if t["type"]=="buy")
     }   
     return render_template("home.html",records=records,stats=stats)
 
@@ -139,13 +139,25 @@ def delete(id):
 #修改
 @app.route("/update/<id>",methods=["POST"])
 def update(id):
-    data=request.json
     try:
-        gold_collection.update_one(
-            {"_id":ObjectId(id)},
-            {"$set": data} 
+        data=request.json
+        update_data={
+            "type":data.get("type"),
+            "weight":float(data.get("weight",0)),
+            "price":float(data.get("price",0)),
+            "amount":float(data.get("amount",0)),
+            "note":data.get("note",""),
+            "timestamp":datetime.strptime(data.get("timestamp"),"%Y-%m-%d") if data.get("timestamp") else datetime.now()
+        }
+        
+        result=gold_collection.update_one(
+            {"_id":ObjectId(id),"owner":session["nickname"]},
+            {"$set": update_data} 
         )
-        return jsonify({"success":True})
+        if result.modified_count>0:
+            return jsonify({"success":True})
+        else:
+            return jsonify({"success":False,"error":"沒有找到符合條件的文件或沒有變更"})
     except Exception as e:
         return jsonify({"success":False,"error":str(e)})
         
