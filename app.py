@@ -93,11 +93,14 @@ def home():
     #日期篩選
     start_str=request.form.get("start")
     end_str=request.form.get("end")
+    type=request.form.get("selectType")
     query={"owner":session["nickname"]}
     if start_str and end_str:
         start_date=datetime.strptime(start_str,"%Y-%m-%d")
         end_date=datetime.strptime(end_str,"%Y-%m-%d")
         query["timestamp"]={"$gte": start_date, "$lte": end_date}
+    if type and type!="all":
+        query["type"]=type
     records=list(gold_collection.find(query).sort("timestamp",-1))
     #統計資訊
     stats={
