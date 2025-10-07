@@ -105,9 +105,11 @@ def home():
     #統計資訊
     stats={
         "total_buy":sum(float(t["amount"]) for t in records if t["type"]=="buy"),
-        "total_amount":sum(float(t["amount"]) for t in records if t["type"]=="buy"),
+        "total_earn":sum(float(t["amount"]) for t in records if t["type"]=="buy")
+                    -sum(float(t["amount"]) for t in records if t["type"]=="sell"),
         "total_avg_amount":clt_avg_amount(records),
         "total_weight":sum(float(t['weight']) for t in records if t["type"]=="buy")
+                    -sum(float(t['weight']) for t in records if t["type"]=="sell")
     }   
     return render_template("home.html",records=records,stats=stats)
 
