@@ -32,10 +32,15 @@
                 <option value="sell">賣出</option>
             </select>
         </div>
-        <div>
-            <button type="submit">查詢</button>
+        <div style="display:flex;">
+            <div style="flex:none;width: 95%;">
+                <button type="submit">查詢</button>
+            </div>
+            <div style="flex:none;width: 5%;">
+                <p>今日金價:{{gold_price}}</p>
+            </div>
         </div>
-        </form>
+    </form>
     <hr/>
     <table class="table table-triped">
         <thead>

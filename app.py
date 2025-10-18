@@ -1,11 +1,13 @@
 from bson.objectid import ObjectId
 import pymongo
+import requests
 client =pymongo.MongoClient("mongodb+srv://ryan:ryan1234@mycluster.rf6tx9u.mongodb.net/?retryWrites=true&w=majority&appName=MyCluster")
 gold_db=client.goldbuysell
 gold_collection=gold_db.gold
 member_db=client.member_system
 member_collection=member_db.users
 print("資料庫連線成功")
+
 
 
 from flask import *
@@ -82,13 +84,32 @@ def signout():
 def home():
     if "nickname" not in session:
         return redirect("/")
+    #匯入國際金價
+    url = "https://api.metalpriceapi.com/v1/latest"
+    params={
+        "api_key":"e253b250204d3dd998a1a5b9bf043b1d",
+        "base":"USD",
+        "currencies":"XAU"
+    }
+    try:
+        response=requests.get(url,params=params)
+        data=response.json()
+        print(data)
+        price_once_usd=1/data["rates"]["XAU"]
+        fx=requests.get("https://v6.exchangerate-api.com/v6/5e5369f46d6b679ed5ad357e/latest/USD").json()
+        usd_to_twd=fx["conversion_rates"]["TWD"]
+        price_per_gram_twd=(price_once_usd*usd_to_twd)/ 31.1035
+        gold_price=round(price_per_gram_twd,2)
+    except Exception as e:
+        print("取得金價失敗:",e)
+        gold_price="取得失敗"
     #平均買入價格函式
     def clt_avg_amount(transactions):
         buy_transactions=[t for t in transactions if t["type"]=="buy"]
         if not buy_transactions:
             return 0
-        total_amount=sum([float(t['amount']) for t in transactions])
-        total_weight=sum([float(t['weight']) for t in transactions])
+        total_amount=sum([float(t['amount']) for t in buy_transactions])
+        total_weight=sum([float(t['weight']) for t in buy_transactions])
         return total_amount/total_weight if total_weight!=0 else 0
     #日期篩選
     start_str=request.form.get("start")
@@ -105,13 +126,13 @@ def home():
     #統計資訊
     stats={
         "total_buy":sum(float(t["amount"]) for t in records if t["type"]=="buy"),
-        "total_earn":sum(float(t["amount"]) for t in records if t["type"]=="buy")
-                    -sum(float(t["amount"]) for t in records if t["type"]=="sell"),
+        "total_earn":sum(float(t["amount"]) for t in records if t["type"]=="sell")
+                    -sum(float(t["amount"]) for t in records if t["type"]=="buy"),
         "total_avg_amount":clt_avg_amount(records),
         "total_weight":sum(float(t['weight']) for t in records if t["type"]=="buy")
                     -sum(float(t['weight']) for t in records if t["type"]=="sell")
     }   
-    return render_template("home.html",records=records,stats=stats)
+    return render_template("home.html",records=records,stats=stats,gold_price=gold_price)
 
 #新增
 @app.route("/add",methods=["GET","POST"])
