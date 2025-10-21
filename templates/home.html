@@ -56,7 +56,8 @@
         </thead>
         <tbody>
             {%for t in records %}
-            <tr id="row-{{t._id}}">
+            <tr id="row-{{t._id}}"
+                class="{{ 'table-success' if t.type=='buy' else 'table-danger' }}">
                 <td>{{"買入" if t.type=="buy" else "賣出"}}</td>
                 <td>{{ t.weight }}</td>
                 <td>{{ t.price }}</td>
@@ -78,6 +79,7 @@
             <h5>統計資訊</h5>
             <p>盈虧:{{stats.total_earn}}</p>
             <P>總買入金額:{{stats.total_buy}}</P>
+            <p>總賣出金額:{{stats.total_sell}}</p>
             <P>總重:{{stats.total_weight}}</P>
             <P>平均買入價格:{{stats.total_avg_amount}}</P>
         </div>

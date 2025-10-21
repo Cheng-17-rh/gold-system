@@ -126,6 +126,7 @@ def home():
     #統計資訊
     stats={
         "total_buy":sum(float(t["amount"]) for t in records if t["type"]=="buy"),
+        "total_sell":sum(float(t["amount"]) for t in records if t["type"]=="sell"),
         "total_earn":sum(float(t["amount"]) for t in records if t["type"]=="sell")
                     -sum(float(t["amount"]) for t in records if t["type"]=="buy"),
         "total_avg_amount":clt_avg_amount(records),
